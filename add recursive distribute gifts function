@@ -1,0 +1,31 @@
+void distribute_gifts(int current, vector<int>& ages, vector<int>& gifts, unordered_map<int, int>& received) {
+    if (current < 0 || current >= ages.size()) return;
+
+    int left = find_left(current, ages);
+    int right = find_right(current, ages);
+
+    if (left != -1 && right != -1) {
+        received[ages[left]] += gifts[current] / 2;
+        received[ages[right]] += gifts[current] / 2;
+    } 
+    else if (left != -1) {
+        received[ages[left]] += gifts[current];
+    }
+    else if (right != -1) {
+        received[ages[right]] += gifts[current];
+    }
+    else {
+        received[ages[current]] += gifts[current];
+    }
+
+    int removed_age = ages[current];
+    ages.erase(ages.begin() + current);
+
+    if (left != -1 && left > current) left--;
+    if (right != -1 && right > current) right--;
+
+    if (left != -1) distribute_gifts(left, ages, gifts, received);
+    if (right != -1) distribute_gifts(right, ages, gifts, received);
+    if (left == -1 && right == -1) distribute_gifts(FIRST_LOC, ages, gifts, received);
+    
+}
