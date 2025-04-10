@@ -1,0 +1,27 @@
+int find_right(int current, const vector<int>& ages) {
+    if (current >= ages.size() - 1) return -1;
+
+    int max_smaller = -1;
+    for (int i = current + 1; i < ages.size(); ++i) {
+        if (ages[i] < ages[current]) {
+            if (max_smaller == -1 || ages[i] > ages[max_smaller]) {
+                max_smaller = i;
+            }
+        }
+    }
+    return max_smaller;
+}
+
+int find_left(int current, const vector<int>& ages) {
+    if (current <= 0) return -1;
+
+    int max_smaller = -1;
+    for (int i = current - 1; i >= 0; --i) {
+        if (ages[i] < ages[current]) {
+            if (max_smaller == -1 || ages[i] > ages[max_smaller]) {
+                max_smaller = i;
+            }
+        }
+    }
+    return max_smaller;
+}
