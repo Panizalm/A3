@@ -1,0 +1,9 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+string basic_frac (int a) {
+    int numerator = 2 * a;
+    int denominator = (2 * a) + 1;
+    return to_string(a) + "+\\frac{" + to_string(numerator) + "}{" + to_string(denominator) + "}";
+}
