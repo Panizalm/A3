@@ -69,7 +69,6 @@ unordered_map<int, int> spread_gifts (int right, int left, int current, unordere
     else {
         result[ages[current]] += gifts[current];
     }
-
     return result;
 }
 
@@ -98,25 +97,17 @@ int main() {
     int n;
     cin >> n;
     
-    vector<int> ages(n), gifts(n), ages_original(n), binary_presence(n, 1);
-    vector<int> origin_ages(n);
+    vector<int> ages(n), gifts(n), binary_presence(n, 1);
+    unordered_map <int, int> receives = received(ages);
 
     for (int i = 0; i < n; ++i) cin >> ages[i];
     for (int i = 0; i < n; ++i) cin >> gifts[i];
 
-    
-    ages_original = ages;
-    origin_ages = ages;
-    
-    unordered_map <int, int> receives = received(ages);
-
     int sultan = find_sultan (n, ages);
-    
-    
     distribute_gifts(sultan, ages, binary_presence, gifts, receives);
-    cout << "Final gift distribution: \n";
+
     
-    for (int age : ages_original) { 
+    for (int age : ages) { 
         cout << receives[age] << " ";
     }
     cout << endl;
