@@ -1,0 +1,125 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+using namespace std;
+
+unordered_map <int, int> received (vector<int> ages) {
+    unordered_map <int, int> result;
+    for (int age : ages) {
+        result[age] = 0;
+    }
+    return result;
+}
+
+int find_right(int current, const vector<int>& ages, vector<int>& binary_presence) {
+    if (current >= ages.size() - 1) return -1;
+
+    int max_smaller = -1;
+    for (int i = current + 1; i < ages.size(); ++i) {
+        if (binary_presence[i] == 0) {
+            break;
+        }
+        if (ages[i] < ages[current]) {
+            if (max_smaller == -1 || ages[i] > ages[max_smaller]) {
+                max_smaller = i;
+            }
+        }
+    }
+    return max_smaller;
+}
+
+int find_left(int current, const vector<int>& ages, vector<int>& binary_presence) {
+    if (current <= 0) return -1;
+
+    int max_smaller = -1;
+    for (int i = current - 1; i >= 0; --i) {
+        if (binary_presence[i] == 0) {
+            break;
+        }
+        if (ages[i] < ages[current]) {
+            if (max_smaller == -1 || ages[i] > ages[max_smaller]) {
+                max_smaller = i;
+            }
+        }
+    }
+    return max_smaller;
+}
+
+int find_sultan (int n, vector <int> ages) {
+    int sultan = 0;
+    for (int i = 1; i < n; ++i) {
+        if (ages[i] > ages[sultan]) sultan = i;
+    }
+    return sultan;
+}
+
+unordered_map<int, int> spread_gifts (int right, int left, int current, unordered_map<int, int>& received, vector<int>& ages, vector<int>& gifts) {
+    unordered_map<int, int> result = received;
+    if (left != -1 && right != -1) {
+        result[ages[left]] += gifts[current] / 2;
+        result[ages[right]] += gifts[current] / 2;
+    } 
+    else if (left != -1) {
+        result[ages[left]] += gifts[current];
+    }
+    else if (right != -1) {
+        result[ages[right]] += gifts[current];
+    }
+    else {
+        result[ages[current]] += gifts[current];
+    }
+
+    return result;
+}
+
+void distribute_gifts(int current, vector<int>& ages, vector<int>& binary_presence, vector<int>& gifts, unordered_map<int, int>& received) {
+    if (current < 0 || current >= ages.size()) return;
+    
+    int left = find_left(current, ages, binary_presence);
+    int right = find_right(current, ages, binary_presence);
+
+    binary_presence[current] = 0;
+    received = spread_gifts(right, left, current, received, ages, gifts);
+    if (right != -1) distribute_gifts(right, ages, binary_presence, gifts, received);
+    if (left != -1) distribute_gifts(left, ages, binary_presence, gifts, received);
+    
+    if (left != -1 && right != -1) {
+        auto it = find(binary_presence.begin(), binary_presence.end(), 1);
+        if (it != binary_presence.end()) {
+            int temp = distance(binary_presence.begin(), it);
+            distribute_gifts(temp, ages, binary_presence, gifts, received);
+        }
+    
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<int> ages(n), gifts(n), ages_original(n), binary_presence(n, 1);
+    vector<int> origin_ages(n);
+
+    for (int i = 0; i < n; ++i) cin >> ages[i];
+    for (int i = 0; i < n; ++i) cin >> gifts[i];
+
+    
+    ages_original = ages;
+    origin_ages = ages;
+    
+    unordered_map <int, int> receives = received(ages);
+
+    int sultan = find_sultan (n, ages);
+    
+    
+    distribute_gifts(sultan, ages, binary_presence, gifts, receives);
+    cout << "Final gift distribution: \n";
+    
+    for (int age : ages_original) { 
+        cout << receives[age] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
