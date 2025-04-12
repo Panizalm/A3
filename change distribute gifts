@@ -1,0 +1,20 @@
+void distribute_gifts(int current, vector<int>& ages, vector<int>& binary_presence, vector<int>& gifts, unordered_map<int, int>& received) {
+    if (current < 0 || current >= ages.size()) return;
+    
+    int left = find_left(current, ages, binary_presence);
+    int right = find_right(current, ages, binary_presence);
+
+    binary_presence[current] = 0;
+    received = spread_gifts(right, left, current, received, ages, gifts);
+    if (right != -1) distribute_gifts(right, ages, binary_presence, gifts, received);
+    if (left != -1) distribute_gifts(left, ages, binary_presence, gifts, received);
+    
+    if (left != -1 && right != -1) {
+        auto it = find(binary_presence.begin(), binary_presence.end(), 1);
+        if (it != binary_presence.end()) {
+            int temp = distance(binary_presence.begin(), it);
+            distribute_gifts(temp, ages, binary_presence, gifts, received);
+        }
+    
+    }
+}
