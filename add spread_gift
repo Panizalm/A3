@@ -1,0 +1,22 @@
+unordered_map<int, int> spread_gifts (int right, int left, int current, unordered_map<int, int>& received, vector<int>& ages, vector<int>& gifts) {
+    unordered_map<int, int> result = received;
+    if (left != -1 && right != -1) {
+        result[ages[left]] += gifts[current] / 2;
+        result[ages[right]] += gifts[current] / 2;
+    } 
+    else if (left != -1) {
+        result[ages[left]] += gifts[current];
+    }
+    else if (right != -1) {
+        result[ages[right]] += gifts[current];
+    }
+    else {
+        result[ages[current]] += gifts[current];
+    }
+    for (int age : ages) { 
+        cout <<result[age] << " ";
+    }
+    cout << endl;
+
+    return result;
+}
