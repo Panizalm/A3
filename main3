@@ -1,1 +1,25 @@
+#include <iostream>
+#include <utility> 
+#include <list>
+#include <set>
+#include <vector>
+#include <algorithm>
+#include <cmath>     
 
+using namespace std;
+
+list<set<pair<char, double>>> subsets(set<pair<char, double>> s) {
+    if (s.empty()) {
+        return {{}};
+    }
+    auto it = s.begin();
+    pair<char, double> first = *it;
+    s.erase(it);
+    list<set<pair<char, double>>> subsetsOfRest = subsets(s);
+    list<set<pair<char, double>>> result = subsetsOfRest;
+    for (set<pair<char, double>> subset : subsetsOfRest) {
+        subset.insert(first);
+        result.push_back(subset);
+    }
+    return result;
+}
