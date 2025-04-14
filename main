@@ -23,3 +23,115 @@ list<set<pair<char, double>>> subsets(set<pair<char, double>> s) {
     }
     return result;
 }
+
+void increaseBy10Percent(set<pair<char, double>>& s) {
+    set<pair<char, double>> temp;
+    for (const auto& elem : s) {
+        double increasedValue = elem.second * 1.10;
+        temp.insert({elem.first, increasedValue});
+    }
+    s = temp;
+}
+
+// void applyDiscount(set<pair<char, double>>& s, double x) {
+//     set<pair<char, double>> temp;
+//     for (const auto& elem : s) {
+//         double discountedValue = elem.second * (1 - x/100.0);
+//         discountedValue = max(discountedValue, 0.0);
+//         temp.insert({elem.first, discountedValue});
+//     }
+//     s = temp;
+// }
+
+// vector<double> sumSubsets(const list<set<pair<char, double>>>& subsets) {
+//     vector<double> sums;
+//     for (const auto& subset : subsets) {
+//         double sum = 0;
+//         for (const auto& elem : subset) {
+//             sum += elem.second;
+//         }
+//         sums.push_back(sum);
+//     }
+//     return sums;
+// }
+
+double sumSubsetDiscounts(const set<pair<char, double>>& subset, double x) {
+    double sum = 0.0;
+    for (const auto& elem : subset) {
+        double discountedValue = elem.second * (x / 100.0);
+        discountedValue = max(discountedValue, 0.0);
+        sum += discountedValue;
+    }
+    return sum;
+}
+
+
+vector<set<pair<char, double>>> verifySubsetsBySum( list<set<pair<char, double>>>& allSubsets, double l = -1.0) {
+    vector<set<pair<char, double>>> result;
+    
+    for (const auto& subset : allSubsets) {
+        bool meetsSumCondition = true;
+        if (l >= 0) {
+            double sum = 0;
+            for (const auto& elem : subset) {
+                sum += elem.second;
+            }
+            meetsSumCondition = (sum > l);
+            cout << "\n ok: " << meetsSumCondition << endl;
+        }
+        if (meetsSumCondition) {
+            result.push_back(subset);
+        }
+    }
+    return result;
+}
+
+vector<set<pair<char, double>>> verifySubsetsByDiscount ( list<set<pair<char, double>>>& allSubsets, double x, double r) {
+    vector<set<pair<char, double>>> result;
+    
+    for (const auto& subset : allSubsets) {
+        bool meetsDiscountCondition = true;
+        
+        if (x >= 0 && r >= 0) {
+            double totalDiscount = sumSubsetDiscounts(subset, x);
+            cout << "\n total:" << totalDiscount;
+            cout << "\n r: " << r << endl;
+            meetsDiscountCondition = (totalDiscount < r);
+            cout << meetsDiscountCondition;
+        }
+        
+        if (meetsDiscountCondition) {
+            result.push_back(subset);
+        }
+    }
+    return result;
+}
+
+set<pair<char, double>> findSubsetWithLargestSum(const vector<set<pair<char, double>>>& subsets) {
+    if (subsets.empty()) {
+        return {};
+    }
+
+    auto maxSubset = subsets.begin();
+    double maxSum = 0;
+    for (const auto& elem : *maxSubset) {
+        maxSum += elem.second;
+    }
+
+    for (auto it = subsets.begin() + 1; it != subsets.end(); ++it) {
+        double currentSum = 0;
+        for (const auto& elem : *it) {
+            currentSum += elem.second;
+        }
+        if (currentSum > maxSum) {
+            maxSum = currentSum;
+            maxSubset = it;
+        }
+    }
+
+    return *maxSubset;
+}
+
+
+}
+
